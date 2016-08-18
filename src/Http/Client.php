@@ -3,6 +3,8 @@
 namespace BBE\HubspotAPI\Http;
 
 use GuzzleHttp\Client as GuzzleClient;
+use function GuzzleHttp\Psr7\build_query;
+use GuzzleHttp\Psr7\Request;
 
 class Client extends GuzzleClient
 {
@@ -40,6 +42,9 @@ class Client extends GuzzleClient
         $options = array_merge_recursive([
             'query' => ['hapikey' => $this->api_key],
         ], $options);
+
+        // We have to use the query builder because Hubspot doesn't like proper encoding
+        $options['query'] = build_query($options['query']);
 
         return parent::request($method, $uri, $options);
     }
