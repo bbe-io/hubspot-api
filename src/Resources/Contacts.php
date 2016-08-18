@@ -90,7 +90,7 @@ class Contacts
      */
     public function whereId($ids)
     {
-        if (! is_array($ids)) {
+        if (!is_array($ids)) {
             return $this->whereSingleId($ids);
         }
 
@@ -111,7 +111,7 @@ class Contacts
     public function whereSingleId($id)
     {
         $options = [];
-        $endpoint = '/contact/vid/'.$id.'/profile';
+        $endpoint = '/contact/vid/' . $id . '/profile';
 
         return Collection::make([$this->get($endpoint, $options)]);
     }
@@ -128,11 +128,48 @@ class Contacts
     }
 
     /**
-     * @param $email
-     * @return Contacts
+     * Find one or more contacts from their emails.
+     *
+     * @param String $emails
+     * @return Collection
      */
-    public function whereEmail($email)
+    public function whereEmail($emails)
     {
+        if (!is_array($emails)) {
+            return $this->whereSingleEmail($emails);
+        }
+
+        $endpoint = '/contact/emails/batch/';
+        $options = ['query' => [
+            'vid' => $emails,
+        ]];
+
+        return Collection::make($this->get($endpoint, $options));
+    }
+
+    /**
+     * Find a contact from their email.
+     *
+     * @param String $email
+     * @return Collection
+     */
+    public function whereSingleEmail($email)
+    {
+        $options = [];
+        $endpoint = '/contact/email/' . $email . '/profile';
+
+        return Collection::make([$this->get($endpoint, $options)]);
+    }
+
+    /**
+     * Find a single contact from their ID.
+     *
+     * @param String $email
+     * @return Collection
+     */
+    public function findEmail($email)
+    {
+        return $this->whereSingleEmail($email)->first();
     }
 
     /**
@@ -151,7 +188,7 @@ class Contacts
      */
     private function url(String $url)
     {
-        return $this->base_url.$url;
+        return $this->base_url . $url;
     }
 
     /**
@@ -160,6 +197,6 @@ class Contacts
      */
     public function __call($name, $arguments)
     {
-        echo "\nUnknown method: ".$name."\n";
+        echo "\nUnknown method: " . $name . "\n";
     }
 }
