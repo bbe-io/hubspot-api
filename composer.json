@@ -9,7 +9,8 @@
     }
   ],
   "require": {
-    "illuminate/support": "~5.2"
+    "illuminate/support": "~5.2",
+    "guzzlehttp/guzzle": "^6.2"
   },
   "require-dev": {
     "mockery/mockery": "~0.9",
