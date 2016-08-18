@@ -24,8 +24,8 @@ class Factory
         // Default request options
         $config = array_merge([
             'base_uri' => 'https://api.hubapi.com',
-            'connect_timeout' => 1,
-            'timeout' => 2,
+            'connect_timeout' => 5,
+            'timeout' => 5,
         ], $config);
 
         $this->client = new Client($api_key, $config);

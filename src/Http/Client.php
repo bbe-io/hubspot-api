@@ -37,10 +37,10 @@ class Client extends GuzzleClient
      */
     public function request($method, $uri = '', array $options = [])
     {
-        $options = array_merge([
+        $options = array_merge_recursive([
             'query' => ['hapikey' => $this->api_key],
         ], $options);
 
-        parent::request($method, $uri, $options);
+        return parent::request($method, $uri, $options);
     }
 }

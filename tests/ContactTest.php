@@ -15,7 +15,9 @@ class ContactTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $hubspot->contacts()->all();
+        $contacts = $hubspot->contacts()->all();
+
+        $this->assertGreaterThan(1, count($contacts));
     }
 
     /** @test */
@@ -23,7 +25,9 @@ class ContactTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $hubspot->contacts()->take(5);
+        $contacts = $hubspot->contacts()->take(3);
+
+        $this->assertCount(3, $contacts);
     }
 
     /** @test */
@@ -32,7 +36,8 @@ class ContactTest extends PHPUnit_Framework_TestCase
         $hubspot = $this->hubspot();
 
         $hubspot->contacts()->whereId('***REMOVED***');
-        $hubspot->contacts()->whereId('***REMOVED***')->first();
+
+
     }
 
     /** @test */

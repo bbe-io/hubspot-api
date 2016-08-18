@@ -14,6 +14,8 @@ class Contacts
      */
     private $client;
 
+    private $base_url = '/contacts/v1';
+
     /**
      * Contacts constructor.
      *
@@ -24,9 +26,14 @@ class Contacts
         $this->client = $client;
     }
 
-    public function __call($name, $arguments)
+    public function all($options = [])
     {
-        echo "\nUnknown method: ".$name."\n";
+        $endpoint = '/lists/all/contacts/all';
+
+        $response = $this->client->request('GET', $this->url($endpoint), $options);
+        $json = json_decode($response->getBody());
+
+        return Collection::make($json->contacts);
     }
 
     public function get()
@@ -36,7 +43,7 @@ class Contacts
 
     public function take($count)
     {
-        return $this->get()->take($count);
+        return $this->all(['query' => ['count' => $count]]);
     }
 
     public function whereId($id)
@@ -64,5 +71,16 @@ class Contacts
         }
 
         return $this->get();
+    }
+
+
+    private function url(String $url)
+    {
+        return $this->base_url . $url;
+    }
+
+    public function __call($name, $arguments)
+    {
+        echo "\nUnknown method: " . $name . "\n";
     }
 }
