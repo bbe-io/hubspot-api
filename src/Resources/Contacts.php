@@ -3,6 +3,7 @@
 namespace BBE\HubspotAPI\Resources;
 
 use BBE\HubspotAPI\Http\Client;
+use BBE\HubspotAPI\Models\Contact;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Collection;
 
@@ -45,7 +46,10 @@ class Contacts
 
         $json = json_decode($response->getBody());
 
-        $contacts = $this->pluckContacts($json);
+        $contacts = $this->pluckContacts($json)->map(function ($contact) {
+            // Map contacts to their models
+            return new Contact($contact);
+        });
 
         return $contacts;
     }

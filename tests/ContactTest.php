@@ -77,11 +77,11 @@ class ContactTest extends PHPUnit_Framework_TestCase
         $contacts = $hubspot->contacts()->whereId(['***REMOVED***', '***REMOVED***', '***REMOVED***']);
         $this->assertCount(3, $contacts);
 
-        $ids = $contacts->keys();
+        $ids = $contacts->pluck('id');
 
-        $this->assertTrue($ids->contains('***REMOVED***'));
-        $this->assertTrue($ids->contains('***REMOVED***'));
-        $this->assertTrue($ids->contains('***REMOVED***'));
+        $this->assertTrue($ids->contains(***REMOVED***));
+        $this->assertTrue($ids->contains(***REMOVED***));
+        $this->assertTrue($ids->contains(***REMOVED***));
     }
 
     /** @test */
@@ -96,6 +96,12 @@ class ContactTest extends PHPUnit_Framework_TestCase
         ]);
 
         $this->assertCount(3, $contacts);
+
+        $emails = $contacts->pluck('email');
+
+        $this->assertTrue($emails->contains('***REMOVED***'));
+        $this->assertTrue($emails->contains('***REMOVED***'));
+        $this->assertTrue($emails->contains('***REMOVED***'));
     }
 
     /** @test */
