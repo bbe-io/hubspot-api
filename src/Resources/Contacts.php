@@ -155,7 +155,7 @@ class Contacts
      * @param String $email
      * @return Collection
      */
-    public function whereSingleEmail($email)
+    public function whereSingleEmail(String $email)
     {
         $options = [];
         $endpoint = '/contact/email/' . $email . '/profile';
@@ -169,17 +169,54 @@ class Contacts
      * @param String $email
      * @return Collection
      */
-    public function findEmail($email)
+    public function findEmail(String $email)
     {
         return $this->whereSingleEmail($email)->first();
     }
 
     /**
-     * @param $token
+     *
+     *
+     * @param $tokens
      * @return Contacts
      */
-    public function whereToken($token)
+    public function whereToken($tokens)
     {
+        if (!is_array($tokens)) {
+            return $this->whereSingleToken($tokens);
+        }
+
+        $endpoint = '/contact/utks/batch/';
+        $options = ['query' => [
+            'utk' => $tokens,
+        ]];
+
+        return $this->get($endpoint, $options);
+    }
+
+    /**
+     * Find a contact from their email.
+     *
+     * @param String $token
+     * @return Collection
+     */
+    public function whereSingleToken(String $token)
+    {
+        $options = [];
+        $endpoint = '/contact/utk/' . $token . '/profile';
+
+        return $this->get($endpoint, $options);
+    }
+
+    /**
+     * Find a single contact from their ID.
+     *
+     * @param String $token
+     * @return Collection
+     */
+    public function findToken($token)
+    {
+        return $this->whereSingleToken($token)->first();
     }
 
     /**

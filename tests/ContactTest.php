@@ -105,7 +105,7 @@ class ContactTest extends PHPUnit_Framework_TestCase
 
         $contacts = $hubspot->contacts()->whereToken([
             '***REMOVED***',
-            '0f62625e98b0efad5444e5db01051340',
+            '***REMOVED***',
         ]);
 
         $this->assertCount(2, $contacts);
