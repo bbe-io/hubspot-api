@@ -43,7 +43,11 @@ class Contacts
     {
         $response = $this->client->request('GET', $this->url($endpoint), $options);
 
-        return json_decode($response->getBody());
+        $json = json_decode($response->getBody());
+
+        $contacts = $this->pluckContacts($json);
+
+        return $contacts;
     }
 
     /**
@@ -58,9 +62,7 @@ class Contacts
     {
         $endpoint = '/lists/all/contacts/all';
 
-        $response = $this->get($endpoint, []);
-
-        return Collection::make($response->contacts);
+        return $this->get($endpoint, []);
     }
 
     /**
@@ -77,9 +79,9 @@ class Contacts
         }
 
         $endpoint = '/lists/all/contacts/all';
-        $response = $this->get($endpoint, ['query' => ['count' => $count]]);
+        $options = ['query' => ['count' => $count]];
 
-        return Collection::make($response->contacts);
+        return $this->get($endpoint, $options);
     }
 
     /**
@@ -99,7 +101,7 @@ class Contacts
             'vid' => $ids,
         ]];
 
-        return Collection::make($this->get($endpoint, $options));
+        return $this->get($endpoint, $options);
     }
 
     /**
@@ -113,7 +115,7 @@ class Contacts
         $options = [];
         $endpoint = '/contact/vid/' . $id . '/profile';
 
-        return Collection::make([$this->get($endpoint, $options)]);
+        return $this->get($endpoint, $options);
     }
 
     /**
@@ -141,10 +143,10 @@ class Contacts
 
         $endpoint = '/contact/emails/batch/';
         $options = ['query' => [
-            'vid' => $emails,
+            'email' => $emails,
         ]];
 
-        return Collection::make($this->get($endpoint, $options));
+        return $this->get($endpoint, $options);
     }
 
     /**
@@ -158,7 +160,7 @@ class Contacts
         $options = [];
         $endpoint = '/contact/email/' . $email . '/profile';
 
-        return Collection::make([$this->get($endpoint, $options)]);
+        return $this->get($endpoint, $options);
     }
 
     /**
@@ -192,11 +194,30 @@ class Contacts
     }
 
     /**
-     * @param $name
-     * @param $arguments
+     * Pluck a collection of contacts from a json response.
+     *
+     * @param $json
+     * @return Collection
      */
-    public function __call($name, $arguments)
+    private function pluckContacts($json)
     {
-        echo "\nUnknown method: " . $name . "\n";
+        $contacts = isset($json->contacts) ? $json->contacts : $json;
+
+        if ($this->isSingleContact($contacts)) {
+            $contacts = [$contacts];
+        }
+
+        return Collection::make($contacts);
+    }
+
+    /**
+     * Check if the object is a single contact.
+     *
+     * @param $contact
+     * @return bool
+     */
+    private function isSingleContact($contact)
+    {
+        return isset($contact->vid);
     }
 }
