@@ -15,7 +15,7 @@ $hubspot = Hubspot::connect('***REMOVED***');
 
 ### Retrieving single contacts
 
-Returns an instance of [`BBE\HubspotAPI\Models\Contact`](#contacts).
+Returns an instance of `BBE\HubspotAPI\Models\Contact`.
 
 ```php
 $contact = $hubspot->contacts()->findWithId('***REMOVED***');
