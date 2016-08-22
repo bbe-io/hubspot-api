@@ -41,7 +41,7 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $contact = $contacts->first();
         $this->assertEquals('***REMOVED***', $contact->vid);
 
-        $contact = $hubspot->contacts()->findId('***REMOVED***');
+        $contact = $hubspot->contacts()->findWithId('***REMOVED***');
         $this->assertEquals('***REMOVED***', $contact->vid);
     }
 
@@ -56,7 +56,7 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $contact = $contacts->first();
         $this->assertEquals('***REMOVED***', $contact->email);
 
-        $contact = $hubspot->contacts()->findEmail('***REMOVED***');
+        $contact = $hubspot->contacts()->findWithEmail('***REMOVED***');
         $this->assertEquals('***REMOVED***', $contact->email);
     }
 
@@ -67,6 +67,9 @@ class ContactsTest extends PHPUnit_Framework_TestCase
 
         $contacts = $hubspot->contacts()->whereToken('***REMOVED***');
         $this->assertCount(1, $contacts);
+
+        $contact = $hubspot->contacts()->findWithToken('***REMOVED***');
+        $this->assertNotNull($contact);
     }
 
     /** @test */

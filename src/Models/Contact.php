@@ -163,6 +163,24 @@ class Contact
     }
 
     /**
+     * Get a fresh copy of the Contact from HubSpot.
+     *
+     * @return $this
+     */
+    public function fresh()
+    {
+        $this->discard();
+
+        if ($this->vid) {
+            $this->properties = $this->resource->findWithId($this->vid)->properties;
+        } elseif ($this->email) {
+            $this->properties = $this->resource->findWithEmail($this->email)->properties;
+        }
+
+        return $this;
+    }
+
+    /**
      * Update the contact using its ID.
      *
      * @return mixed|\Psr\Http\Message\ResponseInterface|void

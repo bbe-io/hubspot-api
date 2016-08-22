@@ -57,6 +57,7 @@ class Contacts
      *
      * @param String $endpoint
      * @param array $options
+     * @return mixed|\Psr\Http\Message\ResponseInterface|void
      */
     public function post(String $endpoint, array $options = [])
     {
@@ -137,9 +138,9 @@ class Contacts
      * Find a single contact from their ID.
      *
      * @param int $id
-     * @return Collection
+     * @return Contact
      */
-    public function findId($id)
+    public function findWithId($id)
     {
         return $this->whereSingleId($id)->first();
     }
@@ -182,9 +183,9 @@ class Contacts
      * Find a single contact from their ID.
      *
      * @param String $email
-     * @return Collection
+     * @return Contact
      */
-    public function findEmail(String $email)
+    public function findWithEmail(String $email)
     {
         return $this->whereSingleEmail($email)->first();
     }
@@ -225,9 +226,9 @@ class Contacts
      * Find a single contact from their ID.
      *
      * @param String $token
-     * @return Collection
+     * @return Contact
      */
-    public function findToken($token)
+    public function findWithToken($token)
     {
         return $this->whereSingleToken($token)->first();
     }
@@ -271,6 +272,12 @@ class Contacts
         return isset($contact->vid);
     }
 
+    /**
+     * Create a Contact model from contact data.
+     *
+     * @param $contact
+     * @return Contact
+     */
     private function mapToModel($contact)
     {
         return new Contact($this, $contact);
