@@ -1,46 +1,111 @@
-# Medibank Index
-Global realtime search index for Medibank
+# BBE Hubspot API
+Wrapper for the Hubspot API
 
-## Backend
-
-### Setup
+## Setup
 ```php
-use AlgoliaSearch\Client as Algolia;
-use Medibank\Index\Engines\AlgoliaEngine as Engine;
+use BBE\HubspotAPI\Factory as Hubspot;
 
-$algolia = new Algolia('id', 'secret');
-$searchEngine = new Engine($algolia, 'dev_HealthBreif'); 
+$hubspot = Hubspot::connect('***REMOVED***');
 ```
 
-### Import
+## Usage
+
+### Contacts
+`BBE\HubspotAPI\Resources\Contacts`
+
+#### Retrieving single contacts
+
+Returns an instance of [`BBE\HubspotAPI\Models\Contact`](#contacts).
+
 ```php
-use Illuminate\Support\Collection;
-
-$post_data = [
-    ['id' => 1],
-    ['id' => 2],
-    ['id' => 3],
-];
-
-$searchEngine->import(Collection::make($post_data));
+$contact = $hubspot->contacts()->findWithId('***REMOVED***');
+$contact = $hubspot->contacts()->findWithEmail('***REMOVED***');
+$contact = $hubspot->contacts()->findWithToken('***REMOVED***');
 ```
 
-### Update
+#### Retrieving multiple contacts
+
+Always returns a `Collection`, even if only one contact is requested.
+All of Laravel's [collection methods](https://laravel.com/docs/5.2/collections#available-methods) are available. 
+
+##### All recent contacts
+
 ```php
-use Illuminate\Support\Collection;
+$contacts = $hubspot->contacts()->all();
+```
+Note that HubSpot will only return a maximum of 100 contacts
 
-$post_data = [
-    ['id' => 1, title => 'Title']
-];
+##### Subset of recent contacts
 
-$searchEngine->update(Collection::make($post_data));
+```php
+$contacts = $hubspot->contacts()->take(3);
 ```
 
-### Delete
+##### Contacts by ID
+
 ```php
-use Illuminate\Support\Collection;
+$contacts = $hubspot->contacts()->whereId('***REMOVED***');
+$contacts = $hubspot->contacts()->whereId(['***REMOVED***', '***REMOVED***', '***REMOVED***']);
+```
 
-$post_ids = [1, 2];
+##### Contacts by email
 
-$searchEngine->delete(Collection::make($post_data));
+```php
+$contacts = $hubspot->contacts()->whereEmail('***REMOVED***');
+$contacts = $hubspot->contacts()->whereEmail([
+    '***REMOVED***',
+    '***REMOVED***',
+    '***REMOVED***',
+]);
+```
+
+##### Contacts by token
+
+```php
+$contacts = $hubspot->contacts()->whereToken('***REMOVED***');
+$contacts = $hubspot->contacts()->whereToken([
+    '***REMOVED***',
+    '***REMOVED***',
+]);
+```
+
+### Contact
+`BBE\HubspotAPI\Models\Contact`
+
+All contacts properties are automatically accessible from the object itself.
+For example, if there is an "email" property setup in HubSpot you can get/set it with `$contact->email`.
+
+#### Inserts
+
+[TODO]
+
+#### Updates
+
+The `save` method can be called to update the contact in HubSpot.
+
+```php
+$contact = $hubspot->contacts()->whereId('***REMOVED***')->first();
+
+$contact->phone = '03 9500 000';
+$contact->email = 'new@email.com';
+
+$contact->save();
+```
+
+Changes to the model are tracked, and only the changed properties will be sent to HubSpot to update.
+
+#### Discarding changes
+
+`discard` will drop all changes you have made to the contact.
+
+```php
+$contact = $hubspot->contacts()->findWithId('***REMOVED***');
+$contact->discard();
+```
+
+`fresh` will drop all changes and fetch a fresh copy of the contact from HubSpot.
+
+```php
+$contact = $hubspot->contacts()->findWithId('***REMOVED***');
+$contact->fresh();
 ```
