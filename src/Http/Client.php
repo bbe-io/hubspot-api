@@ -4,7 +4,6 @@ namespace BBE\HubspotAPI\Http;
 
 use GuzzleHttp\Client as GuzzleClient;
 use function GuzzleHttp\Psr7\build_query;
-use GuzzleHttp\Psr7\Request;
 
 class Client extends GuzzleClient
 {

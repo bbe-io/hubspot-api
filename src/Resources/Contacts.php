@@ -4,7 +4,6 @@ namespace BBE\HubspotAPI\Resources;
 
 use BBE\HubspotAPI\Http\Client;
 use BBE\HubspotAPI\Models\Contact;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Collection;
 
 class Contacts
@@ -47,11 +46,23 @@ class Contacts
         $json = json_decode($response->getBody());
 
         $contacts = $this->pluckContacts($json)->map(function ($contact) {
-            // Map contacts to their models
-            return new Contact($contact);
+            return $this->mapToModel($contact);
         });
 
         return $contacts;
+    }
+
+    /**
+     * Perform a post request.
+     *
+     * @param String $endpoint
+     * @param array $options
+     */
+    public function post(String $endpoint, array $options = [])
+    {
+        $response = $this->client->request('POST', $this->url($endpoint), $options);
+
+        return $response;
     }
 
     /**
@@ -96,7 +107,7 @@ class Contacts
      */
     public function whereId($ids)
     {
-        if (!is_array($ids)) {
+        if (! is_array($ids)) {
             return $this->whereSingleId($ids);
         }
 
@@ -117,7 +128,7 @@ class Contacts
     public function whereSingleId($id)
     {
         $options = [];
-        $endpoint = '/contact/vid/' . $id . '/profile';
+        $endpoint = '/contact/vid/'.$id.'/profile';
 
         return $this->get($endpoint, $options);
     }
@@ -141,7 +152,7 @@ class Contacts
      */
     public function whereEmail($emails)
     {
-        if (!is_array($emails)) {
+        if (! is_array($emails)) {
             return $this->whereSingleEmail($emails);
         }
 
@@ -162,7 +173,7 @@ class Contacts
     public function whereSingleEmail(String $email)
     {
         $options = [];
-        $endpoint = '/contact/email/' . $email . '/profile';
+        $endpoint = '/contact/email/'.$email.'/profile';
 
         return $this->get($endpoint, $options);
     }
@@ -179,14 +190,12 @@ class Contacts
     }
 
     /**
-     *
-     *
      * @param $tokens
      * @return Contacts
      */
     public function whereToken($tokens)
     {
-        if (!is_array($tokens)) {
+        if (! is_array($tokens)) {
             return $this->whereSingleToken($tokens);
         }
 
@@ -207,7 +216,7 @@ class Contacts
     public function whereSingleToken(String $token)
     {
         $options = [];
-        $endpoint = '/contact/utk/' . $token . '/profile';
+        $endpoint = '/contact/utk/'.$token.'/profile';
 
         return $this->get($endpoint, $options);
     }
@@ -231,7 +240,7 @@ class Contacts
      */
     private function url(String $url)
     {
-        return $this->base_url . $url;
+        return $this->base_url.$url;
     }
 
     /**
@@ -260,5 +269,10 @@ class Contacts
     private function isSingleContact($contact)
     {
         return isset($contact->vid);
+    }
+
+    private function mapToModel($contact)
+    {
+        return new Contact($this, $contact);
     }
 }

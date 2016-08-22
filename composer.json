@@ -10,7 +10,8 @@
   ],
   "require": {
     "illuminate/support": "~5.2",
-    "guzzlehttp/guzzle": "^6.2"
+    "guzzlehttp/guzzle": "^6.2",
+    "nesbot/carbon": "^1.21"
   },
   "require-dev": {
     "mockery/mockery": "~0.9",
