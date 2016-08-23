@@ -33,7 +33,7 @@ All of Laravel's [collection methods](https://laravel.com/docs/5.2/collections#a
 ```php
 $contacts = $hubspot->contacts()->all();
 ```
-Note that HubSpot will only return a maximum of 100 contacts
+Note that HubSpot will only return a maximum of 100 contacts.
 
 #### Subset of recent contacts
 
@@ -75,10 +75,6 @@ $contacts = $hubspot->contacts()->whereToken([
 All contacts properties are automatically accessible from the object itself.
 For example, if there is an "email" property setup in HubSpot you can get/set it with `$contact->email`.
 
-### Inserts
-
-[TODO]
-
 ### Updates
 
 The `save` method can be called to update the contact in HubSpot.
@@ -109,3 +105,6 @@ $contact->discard();
 $contact = $hubspot->contacts()->findWithId('***REMOVED***');
 $contact->fresh();
 ```
+
+## Forms
+

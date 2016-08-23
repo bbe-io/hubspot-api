@@ -2,68 +2,33 @@
 
 namespace BBE\HubspotAPI\Resources;
 
-use BBE\HubspotAPI\Http\Client;
 use BBE\HubspotAPI\Models\Contact;
+use BBE\HubspotAPI\Resources\Contracts\CanPostData;
+use BBE\HubspotAPI\Resources\Contracts\CanRetrieveData;
+use BBE\HubspotAPI\Resources\Helpers\PostData;
+use BBE\HubspotAPI\Resources\Helpers\RetrieveData;
 use Illuminate\Support\Collection;
 
-class Contacts
+class Contacts extends Resource implements CanRetrieveData, CanPostData
 {
-    /**
-     * The HTTP client.
-     *
-     * @var Client
-     */
-    private $client;
+    use RetrieveData, PostData;
 
     /**
      * Base URL for the endpoint.
      *
      * @var string
      */
-    private $base_url = '/contacts/v1';
+    public $base_url = '/contacts/v1';
 
     /**
-     * Contacts constructor.
+     * Find a single resource model.
      *
-     * @param Client $client
-     */
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
-    /**
-     * Perform a get request and return the decoded JSON.
-     *
-     * @param String $endpoint
-     * @param array $options
+     * @param $id
      * @return mixed
      */
-    public function get(String $endpoint, array $options = [])
+    public function find($id)
     {
-        $response = $this->client->request('GET', $this->url($endpoint), $options);
-
-        $json = json_decode($response->getBody());
-
-        $contacts = $this->pluckContacts($json)->map(function ($contact) {
-            return $this->mapToModel($contact);
-        });
-
-        return $contacts;
-    }
-
-    /**
-     * Perform a post request.
-     *
-     * @param String $endpoint
-     * @param array $options
-     * @return mixed|\Psr\Http\Message\ResponseInterface|void
-     */
-    public function post(String $endpoint, array $options = [])
-    {
-        $response = $this->client->request('POST', $this->url($endpoint), $options);
-
-        return $response;
+        return $this->findWithId($id);
     }
 
     /**
@@ -76,9 +41,7 @@ class Contacts
      */
     public function all()
     {
-        $endpoint = '/lists/all/contacts/all';
-
-        return $this->get($endpoint, []);
+        return $this->get('/lists/all/contacts/all');
     }
 
     /**
@@ -97,7 +60,7 @@ class Contacts
         $endpoint = '/lists/all/contacts/all';
         $options = ['query' => ['count' => $count]];
 
-        return $this->get($endpoint, $options);
+        return $this->get($endpoint, $options)->take($count);
     }
 
     /**
@@ -128,10 +91,7 @@ class Contacts
      */
     public function whereSingleId($id)
     {
-        $options = [];
-        $endpoint = '/contact/vid/'.$id.'/profile';
-
-        return $this->get($endpoint, $options);
+        return $this->get('/contact/vid/'.$id.'/profile');
     }
 
     /**
@@ -173,10 +133,7 @@ class Contacts
      */
     public function whereSingleEmail(String $email)
     {
-        $options = [];
-        $endpoint = '/contact/email/'.$email.'/profile';
-
-        return $this->get($endpoint, $options);
+        return $this->get('/contact/email/'.$email.'/profile');
     }
 
     /**
@@ -216,10 +173,7 @@ class Contacts
      */
     public function whereSingleToken(String $token)
     {
-        $options = [];
-        $endpoint = '/contact/utk/'.$token.'/profile';
-
-        return $this->get($endpoint, $options);
+        return $this->get('/contact/utk/'.$token.'/profile');
     }
 
     /**
@@ -234,27 +188,16 @@ class Contacts
     }
 
     /**
-     * Construct endpoint url with the base url.
-     *
-     * @param String $url
-     * @return string
-     */
-    private function url(String $url)
-    {
-        return $this->base_url.$url;
-    }
-
-    /**
      * Pluck a collection of contacts from a json response.
      *
      * @param $json
      * @return Collection
      */
-    private function pluckContacts($json)
+    public function pluckResources($json)
     {
         $contacts = isset($json->contacts) ? $json->contacts : $json;
 
-        if ($this->isSingleContact($contacts)) {
+        if ($this->isSingleResource($contacts)) {
             $contacts = [$contacts];
         }
 
@@ -267,7 +210,7 @@ class Contacts
      * @param $contact
      * @return bool
      */
-    private function isSingleContact($contact)
+    public function isSingleResource($contact)
     {
         return isset($contact->vid);
     }
@@ -278,7 +221,7 @@ class Contacts
      * @param $contact
      * @return Contact
      */
-    private function mapToModel($contact)
+    public function mapToModel($contact)
     {
         return new Contact($this, $contact);
     }

@@ -2,52 +2,46 @@
 
 namespace BBE\HubspotAPI\Models;
 
-use BBE\HubspotAPI\Resources\Contacts;
 use Illuminate\Support\Collection;
 
-class Contact
+class Contact extends Model
 {
-    /**
-     * The contact ID.
-     *
-     * @var int
-     */
-    public $vid;
 
     /**
-     * A collection of properties the contact has.
+     * Get the model ID.
      *
-     * @var Collection
-     */
-    public $properties;
-
-    /**
-     * A collection of unsaved changes to properties.
-     *
-     * @var Collection
-     */
-    public $changes;
-
-    /**
-     * The Contacts resource.
-     *
-     * @var Contacts
-     */
-    public $resource;
-
-    /**
-     * Contact constructor.
-     *
-     * @param Contacts $resource
      * @param $object
+     * @return mixed
      */
-    public function __construct(Contacts $resource, $object)
+    public function getId($object)
     {
-        $this->resource = $resource;
+        return $object->vid ?: null;
+    }
 
-        $this->vid = $object->vid ?: null;
-        $this->properties = $this->mapProperties($object->properties);
-        $this->changes = Collection::make();
+    /**
+     * Check if the requested property is an ID.
+     *
+     * @param $property
+     * @return bool
+     */
+    public function wantsId($property)
+    {
+        return $property === 'id' || $property === 'vid';
+    }
+
+    /**
+     * Map property values to their key.
+     *
+     * @param $object
+     * @return Collection
+     */
+    public function mapProperties($object)
+    {
+        $properties = Collection::make($object->properties);
+
+        return $properties->map(function ($property) {
+            return $property->value;
+        });
     }
 
     /**
@@ -55,7 +49,7 @@ class Contact
      */
     public function __toString()
     {
-        return (String) $this->vid;
+        return (String)$this->id;
     }
 
     /**
@@ -93,7 +87,7 @@ class Contact
     public function __get($property)
     {
         if ($this->wantsId($property)) {
-            return $this->vid;
+            return $this->id;
         }
 
         // Return the changed version if we have it
@@ -124,30 +118,23 @@ class Contact
     /**
      * Save the contact to HubSpot.
      *
-     * @return mixed|null|\Psr\Http\Message\ResponseInterface|void
+     * @return $this
      * @throws \Exception
      */
     public function save()
     {
-        $response = null;
-
-        // Merge changes
-        $this->properties = $this->properties->merge($this->changes);
-
-        if ($this->vid) {
-            $response = $this->saveWithId();
+        if ($this->id) {
+            $this->saveWithId();
         } elseif ($this->email) {
-            $response = $this->saveWithEmail();
+            $this->saveWithEmail();
+        } else {
+            throw new \Exception('Contact does not have an email or ID for updating');
         }
 
-        // Clear changes collection
-        if ($response) {
-            $this->changes = Collection::make();
+        $this->properties = $this->properties->merge($this->changes);
+        $this->changes = Collection::make();
 
-            return $response;
-        }
-
-        throw new \Exception('Contact does not have an email or ID for updating');
+        return $this;
     }
 
     /**
@@ -171,8 +158,8 @@ class Contact
     {
         $this->discard();
 
-        if ($this->vid) {
-            $this->properties = $this->resource->findWithId($this->vid)->properties;
+        if ($this->id) {
+            $this->properties = $this->resource->findWithId($this->id)->properties;
         } elseif ($this->email) {
             $this->properties = $this->resource->findWithEmail($this->email)->properties;
         }
@@ -187,7 +174,7 @@ class Contact
      */
     private function saveWithId()
     {
-        $endpoint = '/contact/vid/'.$this->vid.'/profile';
+        $endpoint = '/contact/vid/' . $this->id . '/profile';
         $options = ['json' => ['properties' => $this->changesToArray()]];
 
         return $this->resource->post($endpoint, $options);
@@ -200,25 +187,10 @@ class Contact
      */
     private function saveWithEmail()
     {
-        $endpoint = '/contact/createOrUpdate/email/'.$this->email;
+        $endpoint = '/contact/createOrUpdate/email/' . $this->email;
         $options = ['json' => ['properties' => $this->changesToArray()]];
 
         return $this->resource->post($endpoint, $options);
-    }
-
-    /**
-     * Map property values to their key.
-     *
-     * @param array $properties
-     * @return Collection
-     */
-    private function mapProperties($properties)
-    {
-        $properties = Collection::make($properties);
-
-        return $properties->map(function ($property) {
-            return $property->value;
-        });
     }
 
     /**
@@ -234,17 +206,6 @@ class Contact
                 'value' => $item,
             ];
         })->values()->toArray();
-    }
-
-    /**
-     * Check if the requested property is an ID.
-     *
-     * @param $property
-     * @return bool
-     */
-    private function wantsId($property)
-    {
-        return $property === 'id' || $property === 'vid';
     }
 
     /**
