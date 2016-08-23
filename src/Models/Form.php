@@ -36,6 +36,17 @@ class Form extends Model
      */
     public function mapProperties($object)
     {
+        if (isset($object->fields)) {
+            return Collection::make($object->fields);
+        }
+
+        if (isset($object->formFieldGroups)) {
+            return Collection::make($object->formFieldGroups)
+                ->pluck('fields')
+                ->flatten(1)
+                ->keyBy('name');
+        }
+
         return Collection::make();
     }
 }

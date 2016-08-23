@@ -26,7 +26,7 @@ class Forms extends Resource implements CanRetrieveData
      */
     public function find($id)
     {
-        $this->findWithId($id);
+        return $this->findWithId($id);
     }
 
     /**
@@ -78,7 +78,7 @@ class Forms extends Resource implements CanRetrieveData
     {
         $endpoint = '/forms/'.$id;
 
-        return $this->get($endpoint, []);
+        return $this->get($endpoint);
     }
 
     /**
