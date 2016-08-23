@@ -39,10 +39,10 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $contacts);
 
         $contact = $contacts->first();
-        $this->assertEquals('***REMOVED***', $contact->vid);
+        $this->assertEquals('***REMOVED***', $contact->id);
 
         $contact = $hubspot->contacts()->findWithId('***REMOVED***');
-        $this->assertEquals('***REMOVED***', $contact->vid);
+        $this->assertEquals('***REMOVED***', $contact->id);
     }
 
     /** @test */

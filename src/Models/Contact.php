@@ -6,14 +6,13 @@ use Illuminate\Support\Collection;
 
 class Contact extends Model
 {
-
     /**
      * Get the model ID.
      *
      * @param $object
      * @return mixed
      */
-    public function getId($object)
+    public function getJsonID($object)
     {
         return $object->vid ?: null;
     }
@@ -49,7 +48,7 @@ class Contact extends Model
      */
     public function __toString()
     {
-        return (String)$this->id;
+        return (String) $this->id;
     }
 
     /**
@@ -174,7 +173,7 @@ class Contact extends Model
      */
     private function saveWithId()
     {
-        $endpoint = '/contact/vid/' . $this->id . '/profile';
+        $endpoint = '/contact/vid/'.$this->id.'/profile';
         $options = ['json' => ['properties' => $this->changesToArray()]];
 
         return $this->resource->post($endpoint, $options);
@@ -187,7 +186,7 @@ class Contact extends Model
      */
     private function saveWithEmail()
     {
-        $endpoint = '/contact/createOrUpdate/email/' . $this->email;
+        $endpoint = '/contact/createOrUpdate/email/'.$this->email;
         $options = ['json' => ['properties' => $this->changesToArray()]];
 
         return $this->resource->post($endpoint, $options);

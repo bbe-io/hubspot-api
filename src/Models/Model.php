@@ -45,18 +45,10 @@ abstract class Model
     {
         $this->resource = $resource;
 
-        $this->id = $this->getId($object);
+        $this->id = $this->getJsonID($object);
         $this->properties = $this->mapProperties($object);
         $this->changes = Collection::make();
     }
-
-    /**
-     * Map property values to their key.
-     *
-     * @param $object
-     * @return Collection
-     */
-    abstract public function mapProperties($object);
 
     /**
      * Get the model ID.
@@ -64,7 +56,7 @@ abstract class Model
      * @param $object
      * @return mixed
      */
-    abstract public function getId($object);
+    abstract public function getJsonID($object);
 
     /**
      * Check if the requested property is an ID.
@@ -73,4 +65,12 @@ abstract class Model
      * @return bool
      */
     abstract public function wantsId($property);
+
+    /**
+     * Map property values to their key.
+     *
+     * @param $object
+     * @return Collection
+     */
+    abstract public function mapProperties($object);
 }
