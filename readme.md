@@ -13,11 +13,12 @@ $hubspot = Hubspot::connect('***REMOVED***');
 ## Contacts
 `BBE\HubspotAPI\Resources\Contacts`
 
-### Retrieving single contacts
+### Retrieving a single contact
 
 Returns an instance of `BBE\HubspotAPI\Models\Contact`.
 
 ```php
+$contact = $hubspot->contacts()->find('***REMOVED***');
 $contact = $hubspot->contacts()->findWithId('***REMOVED***');
 $contact = $hubspot->contacts()->findWithEmail('***REMOVED***');
 $contact = $hubspot->contacts()->findWithToken('***REMOVED***');
@@ -107,4 +108,43 @@ $contact->fresh();
 ```
 
 ## Forms
+`BBE\HubspotAPI\Resources\Forms`
 
+### Retrieving a single form
+
+Returns an instance of `BBE\HubspotAPI\Models\Form`.
+
+```php
+$form = $hubspot->forms()->find('***REMOVED***');
+$form = $hubspot->forms()->findWithId('***REMOVED***');
+```
+
+### Retrieving multiple forms
+
+Always returns a `Collection`, even if only one contact is requested.
+All of Laravel's [collection methods](https://laravel.com/docs/5.2/collections#available-methods) are available. 
+
+#### All forms
+
+```php
+$forms = $hubspot->forms()->all();
+```
+
+#### Subset of recent forms
+
+```php
+$forms = $hubspot->forms()->take(3);
+```
+
+#### Forms by ID
+
+```php
+$forms = $hubspot->contacts()->whereId('***REMOVED***');
+$forms = $hubspot->contacts()->whereId([
+    '***REMOVED***',
+    '***REMOVED***',
+]);
+```
+
+## Form
+`BBE\HubspotAPI\Models\Form`
