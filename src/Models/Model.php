@@ -10,7 +10,7 @@ abstract class Model
     /**
      * The model ID.
      *
-     * @var int
+     * @var $id
      */
     public $id;
 

@@ -149,3 +149,7 @@ $forms = $hubspot->contacts()->whereId([
 ## Form
 `BBE\HubspotAPI\Models\Form`
 
+All fields are automatically accessible from the object itself.
+For example, if there is an "firstname" field setup in HubSpot you can get it with `$contact->firstname`.
+
+## Form Submission

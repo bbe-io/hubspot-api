@@ -2,10 +2,31 @@
 
 namespace BBE\HubspotAPI\Models;
 
+use BBE\HubspotAPI\Resources\Contracts\CanRetrieveData;
 use Illuminate\Support\Collection;
 
 class Form extends Model
 {
+    /**
+     * HubSpot portal ID.
+     *
+     * @var $portalId
+     */
+    public $portalId;
+
+    /**
+     * Form constructor.
+     *
+     * @param CanRetrieveData $resource
+     * @param $object
+     */
+    public function __construct(CanRetrieveData $resource, $object)
+    {
+        parent::__construct($resource, $object);
+
+        $this->portalId = $object->portalId;
+    }
+
     /**
      * Get the model ID.
      *

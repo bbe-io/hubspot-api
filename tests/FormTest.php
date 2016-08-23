@@ -17,6 +17,8 @@ class FormTest extends PHPUnit_Framework_TestCase
         $form = $hubspot->forms()->find('***REMOVED***');
 
         $this->assertEquals('***REMOVED***', $form->id);
+        $this->assertEquals(***REMOVED***, $form->portalId);
+
         $this->assertTrue($form->properties->has('firstname'));
         $this->assertTrue($form->properties->has('email'));
         $this->assertTrue($form->properties->has('lifecyclestage'));
