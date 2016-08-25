@@ -2,161 +2,64 @@
 
 namespace BBE\HubspotAPI\Models;
 
-use BBE\HubspotAPI\Resources\Contacts;
 use Illuminate\Support\Collection;
 
-class Contact
+class Contact extends Model
 {
     /**
-     * The contact ID.
+     * Get the model ID.
      *
-     * @var int
-     */
-    public $vid;
-
-    /**
-     * A collection of properties the contact has.
-     *
-     * @var Collection
-     */
-    public $properties;
-
-    /**
-     * A collection of unsaved changes to properties.
-     *
-     * @var Collection
-     */
-    public $changes;
-
-    /**
-     * The Contacts resource.
-     *
-     * @var Contacts
-     */
-    public $resource;
-
-    /**
-     * Contact constructor.
-     *
-     * @param Contacts $resource
      * @param $object
-     */
-    public function __construct(Contacts $resource, $object)
-    {
-        $this->resource = $resource;
-
-        $this->vid = $object->vid ?: null;
-        $this->properties = $this->mapProperties($object->properties);
-        $this->changes = Collection::make();
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (String) $this->vid;
-    }
-
-    /**
-     * Check if the property is accessible.
-     *
-     * @param $property
-     * @return bool
-     */
-    public function __isset($property)
-    {
-        if ($this->wantsId($property)) {
-            return true;
-        }
-
-        return $this->properties->has($property);
-    }
-
-    /**
-     * Remove the property from the model.
-     *
-     * @param $property
-     * @return void
-     */
-    public function __unset($property)
-    {
-        $this->properties->forget($property);
-    }
-
-    /**
-     * Get a property from the contact.
-     *
-     * @param $property
      * @return mixed
      */
-    public function __get($property)
+    public function getJsonID($object)
     {
-        if ($this->wantsId($property)) {
-            return $this->vid;
-        }
-
-        // Return the changed version if we have it
-        if ($this->changes->has($property)) {
-            return $this->changes->get($property);
-        }
-
-        return $this->properties->get($property);
+        return $object->vid ?: null;
     }
 
     /**
-     * Set a property on the contact.
+     * Check if the requested property is an ID.
      *
      * @param $property
-     * @param $value
      * @return bool
      */
-    public function __set($property, $value)
+    public function wantsId($property)
     {
-        if ($this->propertyChanged($property, $value)) {
-            $this->changes->put($property, $value);
-        } else {
-            // The supplied value is identical to the existing value - forget the change.
-            $this->changes->forget($property);
-        }
+        return $property === 'id' || $property === 'vid';
+    }
+
+    /**
+     * Map property values to their key.
+     *
+     * @param $object
+     * @return Collection
+     */
+    public function mapProperties($object)
+    {
+        $properties = Collection::make($object->properties);
+
+        return $properties->map(function ($property) {
+            return $property->value;
+        });
     }
 
     /**
      * Save the contact to HubSpot.
      *
-     * @return mixed|null|\Psr\Http\Message\ResponseInterface|void
+     * @return $this
      * @throws \Exception
      */
     public function save()
     {
-        $response = null;
-
-        // Merge changes
-        $this->properties = $this->properties->merge($this->changes);
-
-        if ($this->vid) {
-            $response = $this->saveWithId();
+        if ($this->id) {
+            $this->saveWithId();
         } elseif ($this->email) {
-            $response = $this->saveWithEmail();
+            $this->saveWithEmail();
+        } else {
+            throw new \Exception('Contact does not have an email or ID for updating');
         }
 
-        // Clear changes collection
-        if ($response) {
-            $this->changes = Collection::make();
-
-            return $response;
-        }
-
-        throw new \Exception('Contact does not have an email or ID for updating');
-    }
-
-    /**
-     * Discard changes to the Contact.
-     *
-     * @return $this
-     */
-    public function discard()
-    {
+        $this->properties = $this->properties->merge($this->changes);
         $this->changes = Collection::make();
 
         return $this;
@@ -171,8 +74,8 @@ class Contact
     {
         $this->discard();
 
-        if ($this->vid) {
-            $this->properties = $this->resource->findWithId($this->vid)->properties;
+        if ($this->id) {
+            $this->properties = $this->resource->findWithId($this->id)->properties;
         } elseif ($this->email) {
             $this->properties = $this->resource->findWithEmail($this->email)->properties;
         }
@@ -187,7 +90,7 @@ class Contact
      */
     private function saveWithId()
     {
-        $endpoint = '/contact/vid/'.$this->vid.'/profile';
+        $endpoint = '/contact/vid/'.$this->id.'/profile';
         $options = ['json' => ['properties' => $this->changesToArray()]];
 
         return $this->resource->post($endpoint, $options);
@@ -207,21 +110,6 @@ class Contact
     }
 
     /**
-     * Map property values to their key.
-     *
-     * @param array $properties
-     * @return Collection
-     */
-    private function mapProperties($properties)
-    {
-        $properties = Collection::make($properties);
-
-        return $properties->map(function ($property) {
-            return $property->value;
-        });
-    }
-
-    /**
      * Map the changes into a property/value format array for HubSpot.
      *
      * @return array
@@ -234,32 +122,5 @@ class Contact
                 'value' => $item,
             ];
         })->values()->toArray();
-    }
-
-    /**
-     * Check if the requested property is an ID.
-     *
-     * @param $property
-     * @return bool
-     */
-    private function wantsId($property)
-    {
-        return $property === 'id' || $property === 'vid';
-    }
-
-    /**
-     * Returns true if the value is a change to the unsaved property.
-     *
-     * @param $property
-     * @param $value
-     * @return bool
-     */
-    private function propertyChanged($property, $value)
-    {
-        if ($this->properties->has($property)) {
-            return $this->properties->get($property) !== $value;
-        }
-
-        return true;
     }
 }
