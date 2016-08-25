@@ -24,7 +24,9 @@ class FormSubmission
      */
     private $context;
 
-    private $form;
+    private $portal_id;
+
+    private $form_id;
 
     /**
      * FormSubmission constructor.
@@ -47,6 +49,16 @@ class FormSubmission
         return (new static())->form($form);
     }
 
+    public static function createForEndpoint(String $portal_id, String $form_id)
+    {
+        $submission = new static();
+        $submission->portalId($portal_id);
+        $submission->formId($form_id);
+
+        return $submission;
+    }
+
+
     /**
      * Set the HubSpot context with whatever data we can find.
      */
@@ -59,6 +71,20 @@ class FormSubmission
         if (isset($_SERVER['REMOTE_ADDR'])) {
             $this->context->put('ipAddress', $_SERVER['REMOTE_ADDR']);
         }
+    }
+
+    public function portalId(String $portal_id)
+    {
+        $this->portal_id = $portal_id;
+
+        return $this;
+    }
+
+    public function formId(String $form_id)
+    {
+        $this->form_id = $form_id;
+
+        return $this;
     }
 
     /**
@@ -137,7 +163,8 @@ class FormSubmission
 
     public function form(Form $form)
     {
-        $this->form = $form;
+        $this->form_id = $form->id;
+        $this->portal_id = $form->portal_id;
 
         return $this;
     }
@@ -157,21 +184,21 @@ class FormSubmission
 
     private function postUrl()
     {
-        if (is_null($this->form) || !$this->canSubmit()) {
+        if (!$this->canSubmit()) {
             throw new \Exception('Form data not provided');
         }
 
-        return "https://forms.hubspot.com/uploads/form/v2/{$this->form->portal_id}/{$this->form->id}";
+        return "https://forms.hubspot.com/uploads/form/v2/{$this->portal_id}/{$this->form_id}";
     }
 
 
     private function canSubmit()
     {
-        if (!isset($this->form->portal_id)) {
+        if (!isset($this->portal_id)) {
             throw new \Exception('Portal ID not provided or found on the form');
         }
 
-        if (!isset($this->form->id)) {
+        if (!isset($this->form_id)) {
             throw new \Exception('Form ID not provided or found on the form');
         }
 
@@ -185,8 +212,20 @@ class FormSubmission
         return $this->submit();
     }
 
-    public function submit()
+    public function submit(array $data = [], String $page_name = null, String $page_url = null)
     {
+        if (count($data) > 0) {
+            $this->data($data);
+        }
+
+        if (!is_null($page_name)) {
+            $this->pageName($page_name);
+        }
+
+        if (!is_null($page_url)) {
+            $this->pageUrl($page_url);
+        }
+
         $client = new GuzzleClient([
             'connect_timeout' => 3,
             'timeout' => 5,

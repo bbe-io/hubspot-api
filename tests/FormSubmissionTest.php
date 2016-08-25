@@ -74,14 +74,11 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
         $form = $hubspot->forms()->find('***REMOVED***');
 
         $submission = $form->submission()
-            ->pageName('Unit Test')
-            ->pageUrl('//localhost')
-            ->data([
+            ->submit([
                 'firstname' => 'James',
                 'lastname' => 'Test',
                 'email' => '***REMOVED***'
-            ])
-            ->submit();
+            ], 'Unit Test', '//localhost');
 
         $this->assertTrue($submission);
     }
@@ -97,6 +94,31 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             'lastname' => 'Test',
             'email' => '***REMOVED***'
         ], 'Unit Test', '//localhost');
+
+        $this->assertTrue($submission);
+    }
+
+    /** @test */
+    public function submit_a_form_without_a_form_object()
+    {
+        $submission = FormSubmission::createForEndpoint('***REMOVED***', '***REMOVED***')
+            ->page('Unit Test', '//localhost')
+            ->submit([
+                'firstname' => 'James',
+                'lastname' => 'Test',
+                'email' => '***REMOVED***'
+            ]);
+
+        $this->assertTrue($submission);
+
+        $submission = FormSubmission::create()
+            ->portalId('***REMOVED***')
+            ->formId('***REMOVED***')
+            ->submit([
+                'firstname' => 'James',
+                'lastname' => 'Test',
+                'email' => '***REMOVED***'
+            ], 'Unit Test', '//localhost');
 
         $this->assertTrue($submission);
     }
