@@ -2,6 +2,7 @@
 
 namespace BBE\HubspotAPI\Models;
 
+use BBE\HubspotAPI\FormSubmission;
 use BBE\HubspotAPI\Resources\Contracts\CanRetrieveData;
 use Illuminate\Support\Collection;
 
@@ -10,9 +11,9 @@ class Form extends Model
     /**
      * HubSpot portal ID.
      *
-     * @var $portalId
+     * @var $portal_id
      */
-    public $portalId;
+    public $portal_id;
 
     /**
      * Form constructor.
@@ -24,7 +25,44 @@ class Form extends Model
     {
         parent::__construct($resource, $object);
 
-        $this->portalId = $object->portalId;
+        $this->portal_id = $object->portalId;
+    }
+
+    /**
+     * Create a Form Submission with this form.
+     *
+     * @return FormSubmission
+     */
+    public function submission()
+    {
+        return FormSubmission::createForForm($this);
+    }
+
+    /**
+     * Create a Form Submission with this form and submit it.
+     *
+     * @param array $data
+     * @param String $page_name
+     * @param String $page_url
+     * @return FormSubmission
+     */
+    public function submit(array $data = [], String $page_name = null, String $page_url = null)
+    {
+        $submission = FormSubmission::createForForm($this);
+
+        if (count($data) > 0) {
+            $submission->data($data);
+        }
+
+        if (!is_null($page_name)) {
+            $submission->pageName($page_name);
+        }
+
+        if (!is_null($page_url)) {
+            $submission->pageUrl($page_url);
+        }
+
+        return $submission->submit();
     }
 
     /**
