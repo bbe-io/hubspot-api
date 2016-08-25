@@ -5,7 +5,7 @@ Wrapper for the Hubspot API
 ```php
 use BBE\HubspotAPI\Factory as Hubspot;
 
-$hubspot = Hubspot::connect('***REMOVED***');
+$hubspot = Hubspot::connect('[hubspot_api_key]');
 ```
 
 # Usage
@@ -115,8 +115,8 @@ $contact->fresh();
 Returns an instance of `BBE\HubspotAPI\Models\Form`.
 
 ```php
-$form = $hubspot->forms()->find('***REMOVED***');
-$form = $hubspot->forms()->findWithId('***REMOVED***');
+$form = $hubspot->forms()->find('[form_id]');
+$form = $hubspot->forms()->findWithId('[form_id]');
 ```
 
 ### Retrieving multiple forms
@@ -139,10 +139,10 @@ $forms = $hubspot->forms()->take(3);
 #### Forms by ID
 
 ```php
-$forms = $hubspot->contacts()->whereId('***REMOVED***');
+$forms = $hubspot->contacts()->whereId('[form_id]');
 $forms = $hubspot->contacts()->whereId([
-    '***REMOVED***',
-    '***REMOVED***',
+    '[form_id_1]',
+    '[form_id_2]',
 ]);
 ```
 
@@ -153,6 +153,127 @@ All fields are automatically accessible from the object itself.
 For example, if there is an "firstname" field setup in HubSpot you can get it with `$contact->firstname`.
 
 ## Form Submission
+`BBE\HubspotAPI\FormSubmission`
 
 ### Creating a submission
 
+Form submissions can be created directly from the `FormSubmission` class, or directly from a `Form` model itself.
+
+If you don't have `Form` model available, the endpoint must be set manually.
+
+```php
+$submission = FormSubmission::createForEndpoint('[portal_id]', '[form_id]');
+
+$submission = FormSubmission::create()
+    ->portalId('[portal_id]')
+    ->formId('[form_id]');
+```
+
+Otherwise, If you have a `Form` model this data can be automatically set for you.
+
+```php
+$form = $hubspot->forms()->find('[form_id]');
+
+$submission = FormSubmission::createForForm($form);
+$submission = FormSubmission::create()->form($form);
+$submission = $form->submission(); // Using the helper on the form
+```
+
+### Setting context
+
+HubSpot allows you to supply contextual information about the submission, these properties can be fluently set on the `FormSubmission` once it has been created.
+
+```php
+$submission = FormSubmission::createForForm($form)
+    ->page('Page Name', 'http://page.url');
+    
+$submission = FormSubmission::createForForm($form)
+    ->pageName('Page Name')
+    ->pageUrl('http://page.url');
+```
+
+The tracking token and IP address are automatically set from `$_COOKIE['hubspotutk']` and `$_SERVER['REMOTE_ADDR']` but can be manually overwritten.
+
+```php
+$submission = FormSubmission::createForForm($form)
+    ->ip('127.0.0.1')
+    ->token('[tracking_token]');
+```
+
+### Setting form fields
+
+Form data can be set by passing a named array into the `data` method of the `FormSubmission`.
+
+```php
+$submission = FormSubmission::createForForm($form)
+    ->data([
+        'firstname' => 'James',
+        'lastname' => 'Test',
+        'email' => '***REMOVED***'
+    ]);
+```
+
+### Submitting
+
+Once a `FormSubmission` has been created and the data has been set, you can submit the form by simply calling `submit`.
+
+```php
+$submission = FormSubmission::createForForm($form)
+    ->page('Page Name', 'http://page.url')
+    ->data([
+        'firstname' => 'James',
+        'lastname' => 'Test',
+        'email' => '***REMOVED***'
+    ])
+    ->submit();
+```
+
+You can also submit the `FormSubmission` directly to a `Form` model.
+
+```php
+$form = $hubspot->forms()->find('[form_id]');
+
+$submission = FormSubmission::create()
+    ->page('Page Name', 'http://page.url')
+    ->data([
+        'firstname' => 'James',
+        'lastname' => 'Test',
+        'email' => '***REMOVED***'
+    ])
+    ->submitToForm($form);
+```
+
+If you prefer, data and context can also be set during the submission.
+ 
+```php
+// Set form data in submit
+$submission = FormSubmission::createForEndpoint('[portal_id]', '[form_id]')
+    ->page('Unit Test', '//localhost')
+    ->submit([
+        'firstname' => 'James',
+        'lastname' => 'Test',
+        'email' => '***REMOVED***'
+    ]);
+
+// Set form data and context in submit
+$submission = FormSubmission::createForEndpoint('[portal_id]', '[form_id]')
+    ->submit([
+        'firstname' => 'James',
+        'lastname' => 'Test',
+        'email' => '***REMOVED***'
+    ], 'Unit Test', '//localhost');
+```
+
+This can be easily chained with helper methods.
+
+```php
+$submission = $hubspot->forms()
+    ->find('[form_id]')
+    ->submit([
+        'firstname' => 'James',
+        'lastname' => 'Test',
+        'email' => '***REMOVED***'
+    ], 'Unit Test', '//localhost');
+```
+
+Form submission return `true` on a successful submission and throw an exception otherwise.

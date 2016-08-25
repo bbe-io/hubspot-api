@@ -22,7 +22,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             ->data([
                 'firstname' => 'James',
                 'lastname' => 'Test',
-                'email' => '***REMOVED***'
+                'email' => '***REMOVED***',
             ])
             ->submitToForm($form);
 
@@ -40,7 +40,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             ->data([
                 'firstname' => 'James',
                 'lastname' => 'Test',
-                'email' => '***REMOVED***'
+                'email' => '***REMOVED***',
             ])
             ->submit();
 
@@ -59,7 +59,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             ->data([
                 'firstname' => 'James',
                 'lastname' => 'Test',
-                'email' => '***REMOVED***'
+                'email' => '***REMOVED***',
             ])
             ->form($form)
             ->submit();
@@ -77,7 +77,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             ->submit([
                 'firstname' => 'James',
                 'lastname' => 'Test',
-                'email' => '***REMOVED***'
+                'email' => '***REMOVED***',
             ], 'Unit Test', '//localhost');
 
         $this->assertTrue($submission);
@@ -92,7 +92,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
         $submission = $form->submit([
             'firstname' => 'James',
             'lastname' => 'Test',
-            'email' => '***REMOVED***'
+            'email' => '***REMOVED***',
         ], 'Unit Test', '//localhost');
 
         $this->assertTrue($submission);
@@ -106,7 +106,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             ->submit([
                 'firstname' => 'James',
                 'lastname' => 'Test',
-                'email' => '***REMOVED***'
+                'email' => '***REMOVED***',
             ]);
 
         $this->assertTrue($submission);
@@ -117,7 +117,7 @@ class FormSubmissionTest extends PHPUnit_Framework_TestCase
             ->submit([
                 'firstname' => 'James',
                 'lastname' => 'Test',
-                'email' => '***REMOVED***'
+                'email' => '***REMOVED***',
             ], 'Unit Test', '//localhost');
 
         $this->assertTrue($submission);

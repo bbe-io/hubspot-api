@@ -11,7 +11,7 @@ class Form extends Model
     /**
      * HubSpot portal ID.
      *
-     * @var $portal_id
+     * @var
      */
     public $portal_id;
 
@@ -46,7 +46,7 @@ class Form extends Model
      * @param String $page_url
      * @return FormSubmission
      */
-    public function submit(array $data = [], String $page_name = null, String $page_url = null)
+    public function submit(array $data = [], $page_name = null, $page_url = null)
     {
         $submission = FormSubmission::createForForm($this);
 
@@ -54,11 +54,11 @@ class Form extends Model
             $submission->data($data);
         }
 
-        if (!is_null($page_name)) {
+        if (! is_null($page_name)) {
             $submission->pageName($page_name);
         }
 
-        if (!is_null($page_url)) {
+        if (! is_null($page_url)) {
             $submission->pageUrl($page_url);
         }
 
