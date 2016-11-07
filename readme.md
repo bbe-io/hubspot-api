@@ -18,10 +18,10 @@ $hubspot = Hubspot::connect('[hubspot_api_key]');
 Returns an instance of `BBE\HubspotAPI\Models\Contact`.
 
 ```php
-$contact = $hubspot->contacts()->find('***REMOVED***');
-$contact = $hubspot->contacts()->findWithId('***REMOVED***');
-$contact = $hubspot->contacts()->findWithEmail('***REMOVED***');
-$contact = $hubspot->contacts()->findWithToken('***REMOVED***');
+$contact = $hubspot->contacts()->find('[contact-id]');
+$contact = $hubspot->contacts()->findWithId('[contact-id]');
+$contact = $hubspot->contacts()->findWithEmail('existing@email.com');
+$contact = $hubspot->contacts()->findWithToken('[contact-token]');
 ```
 
 ### Retrieving multiple contacts
@@ -45,28 +45,28 @@ $contacts = $hubspot->contacts()->take(3);
 #### Contacts by ID
 
 ```php
-$contacts = $hubspot->contacts()->whereId('***REMOVED***');
-$contacts = $hubspot->contacts()->whereId(['***REMOVED***', '***REMOVED***', '***REMOVED***']);
+$contacts = $hubspot->contacts()->whereId('[contact-id]');
+$contacts = $hubspot->contacts()->whereId(['[contact-id]', '[contact-id-2]', '[contact-id-3]']);
 ```
 
 #### Contacts by email
 
 ```php
-$contacts = $hubspot->contacts()->whereEmail('***REMOVED***');
+$contacts = $hubspot->contacts()->whereEmail('existing@email.com');
 $contacts = $hubspot->contacts()->whereEmail([
-    '***REMOVED***',
-    '***REMOVED***',
-    '***REMOVED***',
+    'existing@email.com',
+    'existing@email2.com',
+    'existing@email3.com',
 ]);
 ```
 
 #### Contacts by token
 
 ```php
-$contacts = $hubspot->contacts()->whereToken('***REMOVED***');
+$contacts = $hubspot->contacts()->whereToken('[contact-token]');
 $contacts = $hubspot->contacts()->whereToken([
-    '***REMOVED***',
-    '***REMOVED***',
+    '[contact-token]',
+    '[contact-token-2]',
 ]);
 ```
 
@@ -81,7 +81,7 @@ For example, if there is an "email" property setup in HubSpot you can get/set it
 The `save` method can be called to update the contact in HubSpot.
 
 ```php
-$contact = $hubspot->contacts()->whereId('***REMOVED***')->first();
+$contact = $hubspot->contacts()->whereId('[contact-id]')->first();
 
 $contact->phone = '03 9500 000';
 $contact->email = 'new@email.com';
@@ -96,14 +96,14 @@ Changes to the model are tracked, and only the changed properties will be sent t
 `discard` will drop all changes you have made to the contact.
 
 ```php
-$contact = $hubspot->contacts()->findWithId('***REMOVED***');
+$contact = $hubspot->contacts()->findWithId('[contact-id]');
 $contact->discard();
 ```
 
 `fresh` will drop all changes and fetch a fresh copy of the contact from HubSpot.
 
 ```php
-$contact = $hubspot->contacts()->findWithId('***REMOVED***');
+$contact = $hubspot->contacts()->findWithId('[contact-id]');
 $contact->fresh();
 ```
 
@@ -209,7 +209,7 @@ $submission = FormSubmission::createForForm($form)
     ->data([
         'firstname' => 'James',
         'lastname' => 'Test',
-        'email' => '***REMOVED***'
+        'email' => 'existing@email.com'
     ]);
 ```
 
@@ -223,7 +223,7 @@ $submission = FormSubmission::createForForm($form)
     ->data([
         'firstname' => 'James',
         'lastname' => 'Test',
-        'email' => '***REMOVED***'
+        'email' => 'existing@email.com'
     ])
     ->submit();
 ```
@@ -238,7 +238,7 @@ $submission = FormSubmission::create()
     ->data([
         'firstname' => 'James',
         'lastname' => 'Test',
-        'email' => '***REMOVED***'
+        'email' => 'existing@email.com'
     ])
     ->submitToForm($form);
 ```
@@ -252,7 +252,7 @@ $submission = FormSubmission::createForEndpoint('[portal_id]', '[form_id]')
     ->submit([
         'firstname' => 'James',
         'lastname' => 'Test',
-        'email' => '***REMOVED***'
+        'email' => 'existing@email.com'
     ]);
 
 // Set form data and context in submit
@@ -260,7 +260,7 @@ $submission = FormSubmission::createForEndpoint('[portal_id]', '[form_id]')
     ->submit([
         'firstname' => 'James',
         'lastname' => 'Test',
-        'email' => '***REMOVED***'
+        'email' => 'existing@email.com'
     ], 'Unit Test', '//localhost');
 ```
 
@@ -272,7 +272,7 @@ $submission = $hubspot->forms()
     ->submit([
         'firstname' => 'James',
         'lastname' => 'Test',
-        'email' => '***REMOVED***'
+        'email' => 'existing@email.com'
     ], 'Unit Test', '//localhost');
 ```
 

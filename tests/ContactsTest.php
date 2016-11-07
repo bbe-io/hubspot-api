@@ -7,7 +7,7 @@ class ContactsTest extends PHPUnit_Framework_TestCase
 {
     private function hubspot()
     {
-        return Hubspot::connect('***REMOVED***');
+        return Hubspot::connect('[api-key]');
     }
 
     /** @test */
@@ -35,14 +35,14 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $contacts = $hubspot->contacts()->whereId('***REMOVED***');
+        $contacts = $hubspot->contacts()->whereId('[contact-id]');
         $this->assertCount(1, $contacts);
 
         $contact = $contacts->first();
-        $this->assertEquals('***REMOVED***', $contact->id);
+        $this->assertEquals('[contact-id]', $contact->id);
 
-        $contact = $hubspot->contacts()->findWithId('***REMOVED***');
-        $this->assertEquals('***REMOVED***', $contact->id);
+        $contact = $hubspot->contacts()->findWithId('[contact-id]');
+        $this->assertEquals('[contact-id]', $contact->id);
     }
 
     /** @test */
@@ -50,14 +50,14 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $contacts = $hubspot->contacts()->whereEmail('***REMOVED***');
+        $contacts = $hubspot->contacts()->whereEmail('existing@email.com');
         $this->assertCount(1, $contacts);
 
         $contact = $contacts->first();
-        $this->assertEquals('***REMOVED***', $contact->email);
+        $this->assertEquals('existing@email.com', $contact->email);
 
-        $contact = $hubspot->contacts()->findWithEmail('***REMOVED***');
-        $this->assertEquals('***REMOVED***', $contact->email);
+        $contact = $hubspot->contacts()->findWithEmail('existing@email.com');
+        $this->assertEquals('existing@email.com', $contact->email);
     }
 
     /** @test */
@@ -65,10 +65,10 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $contacts = $hubspot->contacts()->whereToken('***REMOVED***');
+        $contacts = $hubspot->contacts()->whereToken('[contact-token]');
         $this->assertCount(1, $contacts);
 
-        $contact = $hubspot->contacts()->findWithToken('***REMOVED***');
+        $contact = $hubspot->contacts()->findWithToken('[contact-token]');
         $this->assertNotNull($contact);
     }
 
@@ -77,14 +77,14 @@ class ContactsTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $contacts = $hubspot->contacts()->whereId(['***REMOVED***', '***REMOVED***', '***REMOVED***']);
+        $contacts = $hubspot->contacts()->whereId(['[contact-id]', '[contact-id-2]', '[contact-id-3]']);
         $this->assertCount(3, $contacts);
 
         $ids = $contacts->pluck('id');
 
-        $this->assertTrue($ids->contains(***REMOVED***));
-        $this->assertTrue($ids->contains(***REMOVED***));
-        $this->assertTrue($ids->contains(***REMOVED***));
+        $this->assertTrue($ids->contains('[contact-id]'));
+        $this->assertTrue($ids->contains('[contact-id-2]'));
+        $this->assertTrue($ids->contains('[contact-id-3]'));
     }
 
     /** @test */
@@ -93,18 +93,18 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $hubspot = $this->hubspot();
 
         $contacts = $hubspot->contacts()->whereEmail([
-            '***REMOVED***',
-            '***REMOVED***',
-            '***REMOVED***',
+            'existing@email.com',
+            'existing@email2.com',
+            'existing@email3.com',
         ]);
 
         $this->assertCount(3, $contacts);
 
         $emails = $contacts->pluck('email');
 
-        $this->assertTrue($emails->contains('***REMOVED***'));
-        $this->assertTrue($emails->contains('***REMOVED***'));
-        $this->assertTrue($emails->contains('***REMOVED***'));
+        $this->assertTrue($emails->contains('existing@email.com'));
+        $this->assertTrue($emails->contains('existing@email2.com'));
+        $this->assertTrue($emails->contains('existing@email3.com'));
     }
 
     /** @test */
@@ -113,8 +113,8 @@ class ContactsTest extends PHPUnit_Framework_TestCase
         $hubspot = $this->hubspot();
 
         $contacts = $hubspot->contacts()->whereToken([
-            '***REMOVED***',
-            '***REMOVED***',
+            '[contact-token]',
+            '[contact-token-2]',
         ]);
 
         $this->assertCount(2, $contacts);
