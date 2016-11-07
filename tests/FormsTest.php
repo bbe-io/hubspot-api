@@ -6,7 +6,7 @@ class FormsTest extends PHPUnit_Framework_TestCase
 {
     private function hubspot()
     {
-        return Hubspot::connect('***REMOVED***');
+        return Hubspot::connect('[api-key]');
     }
 
     /** @test */
@@ -34,14 +34,14 @@ class FormsTest extends PHPUnit_Framework_TestCase
     {
         $hubspot = $this->hubspot();
 
-        $forms = $hubspot->forms()->whereId('***REMOVED***');
+        $forms = $hubspot->forms()->whereId('[form-id]');
         $this->assertCount(1, $forms);
 
         $form = $forms->first();
-        $this->assertEquals('***REMOVED***', $form->id);
+        $this->assertEquals('[form-id]', $form->id);
 
-        $form = $hubspot->forms()->findWithId('***REMOVED***');
-        $this->assertEquals('***REMOVED***', $form->id);
+        $form = $hubspot->forms()->findWithId('[form-id]');
+        $this->assertEquals('[form-id]', $form->id);
     }
 
     /** @test */
@@ -50,14 +50,14 @@ class FormsTest extends PHPUnit_Framework_TestCase
         $hubspot = $this->hubspot();
 
         $forms = $hubspot->forms()->whereId([
-            '***REMOVED***',
-            '***REMOVED***',
+            '[form-id]',
+            '[form-id-2]',
         ]);
         $this->assertCount(2, $forms);
 
         $ids = $forms->pluck('id');
 
-        $this->assertTrue($ids->contains('***REMOVED***'));
-        $this->assertTrue($ids->contains('***REMOVED***'));
+        $this->assertTrue($ids->contains('[form-id]'));
+        $this->assertTrue($ids->contains('[form-id-2]'));
     }
 }
