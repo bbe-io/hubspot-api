@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Resources\Helpers;
 
 trait PostData
@@ -10,7 +9,7 @@ trait PostData
      * @param String $endpoint
      * @param array $options
      */
-    public function post(String $endpoint, array $options = [])
+    public function post($endpoint, array $options = [])
     {
         $response = $this->client->request('POST', $this->url($endpoint), $options);
 

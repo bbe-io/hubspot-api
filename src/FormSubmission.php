@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI;
 
 use BBE\HubspotAPI\Models\Form;
@@ -76,7 +75,7 @@ class FormSubmission
      * @param String $form_id
      * @return static
      */
-    public static function createForEndpoint(String $portal_id, String $form_id)
+    public static function createForEndpoint($portal_id, $form_id)
     {
         $submission = new static();
         $submission->portalId($portal_id);
@@ -105,7 +104,7 @@ class FormSubmission
      * @param String $portal_id
      * @return $this
      */
-    public function portalId(String $portal_id)
+    public function portalId($portal_id)
     {
         $this->portal_id = $portal_id;
 
@@ -118,7 +117,7 @@ class FormSubmission
      * @param String $form_id
      * @return $this
      */
-    public function formId(String $form_id)
+    public function formId($form_id)
     {
         $this->form_id = $form_id;
 
@@ -131,7 +130,7 @@ class FormSubmission
      * @param String $token
      * @return $this
      */
-    public function token(String $token)
+    public function token($token)
     {
         $this->context->put('hutk', $token);
 
@@ -144,7 +143,7 @@ class FormSubmission
      * @param String $ip
      * @return $this
      */
-    public function ip(String $ip)
+    public function ip($ip)
     {
         $this->context->put('ipAddress', $ip);
 
@@ -158,7 +157,7 @@ class FormSubmission
      * @param String $url
      * @return $this
      */
-    public function page(String $name, String $url)
+    public function page($name, $url)
     {
         $this->context->put('pageName', $name);
         $this->context->put('pageUrl', $url);
@@ -172,7 +171,7 @@ class FormSubmission
      * @param String $url
      * @return $this
      */
-    public function pageUrl(String $url)
+    public function pageUrl($url)
     {
         $this->context->put('pageUrl', $url);
 
@@ -185,7 +184,7 @@ class FormSubmission
      * @param String $name
      * @return $this
      */
-    public function pageName(String $name)
+    public function pageName($name)
     {
         $this->context->put('pageName', $name);
 

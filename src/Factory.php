@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI;
 
 use BBE\HubspotAPI\Http\Client;
@@ -19,7 +18,7 @@ class Factory
      * @param String $api_key
      * @param array $config
      */
-    public function __construct(String $api_key, $config = [])
+    public function __construct($api_key, $config = [])
     {
         // Default request options
         $config = array_merge([
@@ -38,7 +37,7 @@ class Factory
      * @param array $config
      * @return static
      */
-    public static function connect(String $api_key, $config = [])
+    public static function connect($api_key, $config = [])
     {
         return new static($api_key, $config);
     }
