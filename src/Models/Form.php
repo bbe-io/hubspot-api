@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Models;
 
 use BBE\HubspotAPI\FormSubmission;

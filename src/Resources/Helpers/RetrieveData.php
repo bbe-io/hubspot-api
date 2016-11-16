@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Resources\Helpers;
 
 use Illuminate\Support\Collection;
@@ -13,7 +12,7 @@ trait RetrieveData
      * @param array $options
      * @return Collection
      */
-    public function get(String $endpoint, array $options = [])
+    public function get($endpoint, array $options = [])
     {
         $response = $this->client->request('GET', $this->url($endpoint), $options);
 
