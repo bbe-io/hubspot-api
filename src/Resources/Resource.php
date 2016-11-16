@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Resources;
 
 use BBE\HubspotAPI\Http\Client;
@@ -36,7 +35,7 @@ abstract class Resource
      * @param String $url
      * @return string
      */
-    public function url(String $url)
+    public function url($url)
     {
         return $this->base_url.$url;
     }

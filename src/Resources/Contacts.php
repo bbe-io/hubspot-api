@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Resources;
 
 use BBE\HubspotAPI\Models\Contact;
@@ -131,7 +130,7 @@ class Contacts extends Resource implements CanRetrieveData, CanPostData
      * @param String $email
      * @return Collection
      */
-    public function whereSingleEmail(String $email)
+    public function whereSingleEmail($email)
     {
         return $this->get('/contact/email/'.$email.'/profile');
     }
@@ -142,7 +141,7 @@ class Contacts extends Resource implements CanRetrieveData, CanPostData
      * @param String $email
      * @return Contact
      */
-    public function findWithEmail(String $email)
+    public function findWithEmail($email)
     {
         return $this->whereSingleEmail($email)->first();
     }
@@ -171,7 +170,7 @@ class Contacts extends Resource implements CanRetrieveData, CanPostData
      * @param String $token
      * @return Collection
      */
-    public function whereSingleToken(String $token)
+    public function whereSingleToken($token)
     {
         return $this->get('/contact/utk/'.$token.'/profile');
     }

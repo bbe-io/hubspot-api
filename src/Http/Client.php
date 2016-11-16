@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Http;
 
 use GuzzleHttp\Client as GuzzleClient;
@@ -20,7 +19,7 @@ class Client extends GuzzleClient
      * @param String $api_key
      * @param array $config
      */
-    public function __construct(String $api_key, array $config = [])
+    public function __construct($api_key, array $config = [])
     {
         $this->api_key = $api_key;
 

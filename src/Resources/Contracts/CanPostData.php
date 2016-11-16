@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Resources\Contracts;
 
 interface CanPostData
@@ -10,5 +9,5 @@ interface CanPostData
      * @param String $endpoint
      * @param array $options
      */
-    public function post(String $endpoint, array $options = []);
+    public function post($endpoint, array $options = []);
 }

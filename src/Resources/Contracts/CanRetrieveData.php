@@ -1,5 +1,4 @@
 <?php
-
 namespace BBE\HubspotAPI\Resources\Contracts;
 
 use Illuminate\Support\Collection;
@@ -13,7 +12,7 @@ interface CanRetrieveData
      * @param array $options
      * @return Collection
      */
-    public function get(String $endpoint, array $options = []);
+    public function get($endpoint, array $options = []);
 
     /**
      * Find a single resource model.
